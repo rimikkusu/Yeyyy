@@ -1,32 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Fallback Example</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lisa my beloved ❤︎ (audio fixed)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand&display=swap" rel="stylesheet">
+  <style>
+    /* Minimal styling kept for clarity */
+    body{font-family:Quicksand,system-ui,-apple-system; background:linear-gradient(180deg,#0b1026,#1b1140,#2b145a); color:#fff; min-height:100vh; display:flex; align-items:center; justify-content:center;}
+    .card{background:rgba(255,255,255,.06); padding:28px; border-radius:18px; text-align:center; width:90%; max-width:720px;}
+    .names{font-family:Pacifico,cursive;font-size:2.4rem;color:#e6dcff;margin-bottom:8px}
+    #status{margin-top:12px;font-size:.95rem;color:#d6ccff;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px}
+    #playBtn{margin-top:10px;padding:10px 18px;border-radius:12px;border:0;background:#ff9ad1;color:#1b1140;cursor:pointer;font-size:1rem}
+    #debug{margin-top:10px;text-align:left;color:#ddd;font-family:monospace;font-size:.85rem;max-height:140px;overflow:auto;background:rgba(0,0,0,.12);padding:8px;border-radius:8px}
+    .small{font-size:.85rem;color:#ccc}
+  </style>
 </head>
 <body>
-    <h1>Audio Playback</h1>
-    <audio id="audioPlayer" controls>
-        <source id="mp3Source" src="music.mp3" type="audio/mpeg">
-        Your browser does not support the audio tag.
+  <div class="card">
+    <div class="names">Lisa my beloved ❤︎</div>
+    <div class="small">Will you be my Valentine?</div>
+
+    <!-- Primary audio: local file expected next to index.html -->
+    <audio id="bgMusic" preload="auto" crossorigin="anonymous">
+      <source id="mp3Source" src="music.mp3" type="audio/mpeg">
+      Your browser doesn't support audio.
     </audio>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const audioPlayer = document.getElementById('audioPlayer');
-            const source = document.getElementById('mp3Source');
 
-            audioPlayer.addEventListener('error', function () {
-                console.log('Local playback failed, falling back to remote source.');
-                source.src = 'https://example.com/known-working-remote.mp3'; // Replace with a known working remote URL
-                audioPlayer.load();
-                audioPlayer.play();
-            });
+    <div>
+      <button id="playBtn">💖 Click to start the music</button>
+    </div>
 
-            audioPlayer.play().catch(function (error) {
-                console.error('Playback failed:', error);
-            });
-        });
-    </script>
+    <div id="status" aria-live="polite">Status: idle</div>
+
+    <div id="debug" aria-hidden="false"></div>
+    <div class="small" style="margin-top:8px">If sound doesn't start, the page will fall back to a known-working remote file and enable controls for manual testing.</div>
+  </div>
+
+<script>
+(function(){
+  const btn = document.getElementById('playBtn');
+  const statusEl = document.getElementById('status');
+  const dbg = document.getElementById('debug');
+  const music = document.getElementById('bgMusic');
+  const sourceEl = document.getElementById('mp3Source');
+
+  // Known-working remote fallback (public example that supports CORS)
+  const REMOTE_FALLBACK = 'https://interactive-examples.mdn.mozilla.net/media/examples/t-rex-roar.mp3';
+
+  function log(...args){
+    console.log(...args);
+    dbg.textContent += args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ') + '\n';
+    dbg.scrollTop = dbg.scrollHeight;
+  }
+
+  function setStatus(text){
+    statusEl.textContent = 'Status: ' + text;
+    log('[STATUS]', text);
+  }
+
+  // Add some events to help diagnose
+  music.addEventListener('loadeddata', ()=>log('event: loadeddata, readyState=', music.readyState));
+  music.addEventListener('canplay', ()=>log('event: canplay'));
+  music.addEventListener('play', ()=>log('event: play'));
+  music.addEventListener('playing', ()=>log('event: playing'));
+  music.addEventListener('pause', ()=>log('event: pause'));
+  music.addEventListener('error', ()=> {
+    const e = music.error;
+    log('event: error', e && { code: e.code, message: e.message });
+  });
+
+  // Helper to change the source and load
+  function setAudioSource(url){
+    if (sourceEl){
+      sourceEl.setAttribute('src', url);
+      music.load();
+    } else {
+      music.src = url;
+    }
+  }
+
+  // Attempt a HEAD fetch to detect obvious network issues (not required; may fail cross-origin)
+  async function headCheck(url){
+    try{
+      const resp = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+      log('HEAD', url, '->', resp.status);
+      return { ok: resp.ok, status: resp.status, type: resp.headers.get('content-type') };
+    }catch(err){
+      log('HEAD failed for', url, err && err.message);
+      return { ok: false, error: err };
+    }
+  }
+
+  // Try to play given url and return boolean success
+  async function tryPlay(url){
+    try{
+      setAudioSource(url);
+      music.volume = 0.5;
+      setStatus('attempting play: ' + url.split('/').pop());
+      // play() must be invoked in a user gesture context (we call it from the click handler)
+      await music.play();
+      // If we reach here, browser accepted the play() and audio should start (or soon trigger 'playing')
+      setStatus('playing: ' + (url.split('/').pop()));
+      return true;
+    }catch(err){
+      log('play() rejected for', url, err && err.name, err && err.message);
+      setStatus('play rejected for ' + (url.split('/').pop()));
+      return false;
+    }
+  }
+
+  // Click handler: try local file, then fallback remote, else enable controls
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    btn.textContent = 'Starting…';
+    dbg.textContent = '';
+
+    // Determine initial src (source tag or audio.src)
+    let initialSrc = sourceEl && sourceEl.getAttribute('src') ? sourceEl.getAttribute('src') : (music.src || '');
+    if(!initialSrc) initialSrc = 'music.mp3';
+
+    // HEAD-check local (best-effort)
+    setStatus('checking local file...');
+    const headLocal = await headCheck(initialSrc);
+    if(headLocal.ok){
+      log('Local HEAD ok, content-type:', headLocal.type);
+    } else {
+      log('Local HEAD not ok; will still attempt play (server might not support HEAD).');
+    }
+
+    // Try local
+    const okLocal = await tryPlay(initialSrc);
+    if(okLocal){
+      btn.style.display = 'none';
+      return;
+    }
+
+    // Local failed — try remote fallback
+    setStatus('trying remote fallback');
+    log('Trying remote fallback:', REMOTE_FALLBACK);
+    const headRemote = await headCheck(REMOTE_FALLBACK);
+    if(headRemote.ok) log('Remote HEAD ok, content-type:', headRemote.type);
+    const okRemote = await tryPlay(REMOTE_FALLBACK);
+    if(okRemote){
+      btn.style.display = 'none';
+      return;
+    }
+
+    // Both attempts failed -> enable controls for manual troubleshooting
+    setStatus('automatic play failed — controls enabled for manual test');
+    music.controls = true;
+    btn.disabled = false;
+    btn.textContent = '💖 Click to start the music';
+    alert('Auto-play failed. Controls have been enabled so you can try playback manually. Check the browser Console and Network tabs for details.');
+  });
+
+  // Small helper to show current internal state in console when requested
+  window.__audioDebugSnapshot = function(){
+    const a = music;
+    const snapshot = {
+      currentSrc: a.currentSrc,
+      srcAttr: sourceEl ? sourceEl.getAttribute('src') : a.src,
+      networkState: a.networkState,
+      readyState: a.readyState,
+      paused: a.paused,
+      muted: a.muted,
+      volume: a.volume,
+      duration: a.duration,
+      error: a.error && { code: a.error.code, message: a.error.message }
+    };
+    log('AUDIO SNAPSHOT:', snapshot);
+    return snapshot;
+  };
+
+  // Optional: if user presses 'y' while focused, open the success card (keeps original flow)
+  window.yes = function(){
+    music.volume = 0.1;
+    music.play().catch(()=>{});
+    document.body.querySelector('#status').textContent = 'Status: ❤️ accepted';
+    // (you can insert your success UI here)
+  };
+
+  // Initial status
+  setStatus('idle — click the pink button to start audio');
+})();
+</script>
 </body>
 </html>
