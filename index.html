@@ -1,189 +1,407 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Lisa my beloved ❤︎ (audio fixed)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand&display=swap" rel="stylesheet">
-  <style>
-    /* Minimal styling kept for clarity */
-    body{font-family:Quicksand,system-ui,-apple-system; background:linear-gradient(180deg,#0b1026,#1b1140,#2b145a); color:#fff; min-height:100vh; display:flex; align-items:center; justify-content:center;}
-    .card{background:rgba(255,255,255,.06); padding:28px; border-radius:18px; text-align:center; width:90%; max-width:720px;}
-    .names{font-family:Pacifico,cursive;font-size:2.4rem;color:#e6dcff;margin-bottom:8px}
-    #status{margin-top:12px;font-size:.95rem;color:#d6ccff;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px}
-    #playBtn{margin-top:10px;padding:10px 18px;border-radius:12px;border:0;background:#ff9ad1;color:#1b1140;cursor:pointer;font-size:1rem}
-    #debug{margin-top:10px;text-align:left;color:#ddd;font-family:monospace;font-size:.85rem;max-height:140px;overflow:auto;background:rgba(0,0,0,.12);padding:8px;border-radius:8px}
-    .small{font-size:.85rem;color:#ccc}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lisa my beloved ❤︎</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+
+
+body{
+font-family:'Quicksand',sans-serif;
+background:linear-gradient(180deg,#0b1026,#1b1140,#2b145a);
+background-attachment:fixed;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+color:#fff;
+}
+
+body::after{
+content:"";
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:radial-gradient(circle at center, rgba(200,180,255,.15), transparent 70%);
+pointer-events:none;
+}
+
+.stars,.photo-bg,.heart-bg{
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+pointer-events:none;
+}
+
+.star{
+position:absolute;
+width:2px;
+height:2px;
+background:white;
+border-radius:50%;
+animation:twinkle 2s infinite alternate;
+opacity:.8;
+}
+
+@keyframes twinkle{
+from{opacity:.3}to{opacity:1}
+}
+
+.soft-heart{
+position:absolute;
+font-size:22px;
+opacity:.7;
+animation:float 12s linear infinite;
+filter:drop-shadow(0 0 12px #c8b6ff);
+}
+
+@keyframes float{
+0%{transform:translateY(110vh) translateX(0)}
+50%{transform:translateY(20vh) translateX(40px)}
+100%{transform:translateY(-120px) translateX(-40px)}
+}
+
+.floating-photo{
+position:absolute;
+border-radius:25px;
+object-fit:cover;
+opacity:.35;
+animation:photo linear infinite;
+box-shadow:0 0 40px rgba(200,182,255,.5);
+}
+
+@keyframes photo{
+0%{transform:translateY(120vh) translateX(0)}
+100%{transform:translateY(-220px) translateX(120px)}
+}
+
+.container{z-index:5;text-align:center}
+
+.card{
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(18px);
+padding:60px;
+border-radius:40px;
+box-shadow:0 0 90px rgba(200,182,255,.45);
+max-width:650px;
+animation:fade .8s ease;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(40px)}
+to{opacity:1}
+}
+
+.names{
+font-family:'Pacifico',cursive;
+font-size:3.2rem;
+color:#e6dcff;
+margin-bottom:15px;
+text-shadow:0 0 18px #d6ccff;
+}
+
+.question{
+font-size:2rem;
+color:#eee;
+margin-bottom:35px;
+}
+
+.buttons{
+    position:relative;
+    height:160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px; /* Space between buttons */
+}
+
+.btn{
+font-size:1.3rem;
+padding:18px 45px;
+border:none;
+border-radius:50px;
+cursor:pointer;
+transition:.3s;
+min-width: 120px; /* Ensure consistent width */
+}
+
+.btn-yes{
+background:#c8b6ff;
+color:#1b1140;
+}
+
+.btn-yes:hover{transform:scale(1.1)}
+
+.btn-no{
+    background:#555;
+    color:white;
+    position: relative;  /* Start as relative so it's in the flex layout */
+    cursor: pointer;
+    border-radius:50px;
+    padding:18px 45px;
+    font-size:1.3rem;
+    border: none;
+    transition: none;
+    min-width: 120px;
+}
+
+.success{display:none}
+.success.show{display:block}
+
+.big-glow-heart{
+font-size:130px;
+animation:pulse 2s infinite;
+filter:
+drop-shadow(0 0 15px #ffd6ff)
+drop-shadow(0 0 35px #c8b6ff)
+drop-shadow(0 0 60px #a88bff);
+}
+
+@keyframes pulse{
+0%,100%{transform:scale(1)}
+50%{transform:scale(1.25)}
+}
+
+.no-box{
+    position: fixed;
+    width: 800px;
+    height: 500px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9998;
+}
+
+.no-box{
+    position: fixed;
+    width: 800px;
+    height: 500px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9998;
+}
+
+.no-box .btn-no{
+    position: absolute;
+    pointer-events: auto;
+
+    left: 50%;
+    top: 83%;
+    transform: translate(-50%, -50%);
+}
+
+
+.no-box .btn-no{
+    position: absolute;
+    pointer-events: auto;
+}
+
+.no-box .btn-no{
+    transition: left .25s ease, top .25s ease;
+}
+
+
+.letter{
+margin-top:25px;
+font-size:1.25rem;
+line-height:1.9;
+color:#eee;
+background:rgba(255,255,255,.05);
+padding:30px;
+border-radius:25px;
+box-shadow:inset 0 0 30px rgba(200,182,255,.25);
+}
+
+.pop-heart{
+position:fixed;
+font-size:28px;
+animation:pop 2s forwards;
+filter:drop-shadow(0 0 12px #d6ccff);
+pointer-events:none;
+}
+
+@keyframes pop{
+0%{transform:scale(0)}
+50%{transform:translateY(-120px) scale(1)}
+100%{transform:translateY(-240px) scale(1.4);opacity:0}
+}
+</style>
 </head>
+
 <body>
-  <div class="card">
-    <div class="names">Lisa my beloved ❤︎</div>
-    <div class="small">Will you be my Valentine?</div>
+    
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
 
-    <!-- Primary audio: local file expected next to index.html -->
-    <audio id="bgMusic" preload="auto" crossorigin="anonymous">
-      <source id="mp3Source" src="music.mp3" type="audio/mpeg">
-      Your browser doesn't support audio.
-    </audio>
 
-    <div>
-      <button id="playBtn">💖 Click to start the music</button>
-    </div>
+<div class="stars" id="stars"></div>
+<div class="heart-bg" id="heartBg"></div>
+<div class="photo-bg" id="photoBg"></div>
 
-    <div id="status" aria-live="polite">Status: idle</div>
+<div class="container">
 
-    <div id="debug" aria-hidden="false"></div>
-    <div class="small" style="margin-top:8px">If sound doesn't start, the page will fall back to a known-working remote file and enable controls for manual testing.</div>
-  </div>
+<div class="card" id="question">
+<div class="names">Lisa my beloved ❤︎⁠</div>
+<div class="question">Will you be my Valentine?</div>
+
+<div class="buttons">
+<button class="btn btn-yes" onclick="yes()">Yes</button>
+<div class="no-box" id="noBox">
+    <button class="btn btn-no" id="noBtn">No</button>
+</div>
+
+</div>
+</div>
+
+
+
+<div class="success" id="success">
+<div class="card">
+
+<div class="big-glow-heart">💗</div>
+<div class="names">Forever & Always</div>
+
+<div class="letter">
+<strong>My beautiful Lisa,</strong><br><br>
+I love you so much my darling, every day I wake up thinking about you.  
+
+Thank you for always being by my side. You make my life brighter, warmer, and happier.  
+I can't wait to see you, hold you, and kiss you.  <br>
+
+And never say that your ugly cuz you're not >:c <br>
+You are the most beautiful girl in the world.  <br>
+I want us to be forever, and I will always love you.  
+
+<br>Happy Valentine's Day my love ❤︎⁠
+
+<br><br>Your boyfriend,<br>
+<strong>Edi ❤︎⁠</strong>
+</div>
+
+</div>
+</div>
+
+</div>
 
 <script>
-(function(){
-  const btn = document.getElementById('playBtn');
-  const statusEl = document.getElementById('status');
-  const dbg = document.getElementById('debug');
-  const music = document.getElementById('bgMusic');
-  const sourceEl = document.getElementById('mp3Source');
+const photos=["cat1.jpg","cat2.jpg","cat3.jpg","cat4.jpg","cat5.jpg","cat6.jpg","cat7.jpg"];
 
-  // Known-working remote fallback (public example that supports CORS)
-  const REMOTE_FALLBACK = 'https://interactive-examples.mdn.mozilla.net/media/examples/t-rex-roar.mp3';
+// stars
+for(let i=0;i<130;i++){
+const s=document.createElement("div");
+s.className="star";
+s.style.left=Math.random()*100+"%";
+s.style.top=Math.random()*100+"%";
+s.style.animationDuration=1+Math.random()*3+"s";
+document.getElementById("stars").appendChild(s);
+}
 
-  function log(...args){
-    console.log(...args);
-    dbg.textContent += args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ') + '\n';
-    dbg.scrollTop = dbg.scrollHeight;
-  }
+function heart(){
+const h=document.createElement("div");
+h.className="soft-heart";
+h.innerHTML="❤︎⁠";
+h.style.left=Math.random()*100+"%";
+h.style.fontSize=16+Math.random()*26+"px";
+document.getElementById("heartBg").appendChild(h);
+setTimeout(()=>h.remove(),12000);
+}
+setInterval(heart,450);
 
-  function setStatus(text){
-    statusEl.textContent = 'Status: ' + text;
-    log('[STATUS]', text);
-  }
+function floatingPhoto(){
+const img=document.createElement("img");
+img.src=photos[Math.floor(Math.random()*photos.length)];
+img.className="floating-photo";
+const size=120+Math.random()*170;
+img.style.width=size+"px";
+img.style.height=size+"px";
+img.style.left=Math.random()*100+"%";
+img.style.animationDuration=35+Math.random()*30+"s";
+document.getElementById("photoBg").appendChild(img);
+setTimeout(()=>img.remove(),65000);
+}
+for(let i=0;i<6;i++) setTimeout(floatingPhoto,i*900);
+setInterval(floatingPhoto,4500);
 
-  // Add some events to help diagnose
-  music.addEventListener('loadeddata', ()=>log('event: loadeddata, readyState=', music.readyState));
-  music.addEventListener('canplay', ()=>log('event: canplay'));
-  music.addEventListener('play', ()=>log('event: play'));
-  music.addEventListener('playing', ()=>log('event: playing'));
-  music.addEventListener('pause', ()=>log('event: pause'));
-  music.addEventListener('error', ()=> {
-    const e = music.error;
-    log('event: error', e && { code: e.code, message: e.message });
-  });
 
-  // Helper to change the source and load
-  function setAudioSource(url){
-    if (sourceEl){
-      sourceEl.setAttribute('src', url);
-      music.load();
-    } else {
-      music.src = url;
-    }
-  }
 
-  // Attempt a HEAD fetch to detect obvious network issues (not required; may fail cross-origin)
-  async function headCheck(url){
-    try{
-      const resp = await fetch(url, { method: 'HEAD', cache: 'no-store' });
-      log('HEAD', url, '->', resp.status);
-      return { ok: resp.ok, status: resp.status, type: resp.headers.get('content-type') };
-    }catch(err){
-      log('HEAD failed for', url, err && err.message);
-      return { ok: false, error: err };
-    }
-  }
 
-  // Try to play given url and return boolean success
-  async function tryPlay(url){
-    try{
-      setAudioSource(url);
-      music.volume = 0.5;
-      setStatus('attempting play: ' + url.split('/').pop());
-      // play() must be invoked in a user gesture context (we call it from the click handler)
-      await music.play();
-      // If we reach here, browser accepted the play() and audio should start (or soon trigger 'playing')
-      setStatus('playing: ' + (url.split('/').pop()));
-      return true;
-    }catch(err){
-      log('play() rejected for', url, err && err.name, err && err.message);
-      setStatus('play rejected for ' + (url.split('/').pop()));
-      return false;
-    }
-  }
+const noBtn = document.getElementById("noBtn");
 
-  // Click handler: try local file, then fallback remote, else enable controls
-  btn.addEventListener('click', async () => {
-    btn.disabled = true;
-    btn.textContent = 'Starting…';
-    dbg.textContent = '';
+let isMoving = false;
 
-    // Determine initial src (source tag or audio.src)
-    let initialSrc = sourceEl && sourceEl.getAttribute('src') ? sourceEl.getAttribute('src') : (music.src || '');
-    if(!initialSrc) initialSrc = 'music.mp3';
 
-    // HEAD-check local (best-effort)
-    setStatus('checking local file...');
-    const headLocal = await headCheck(initialSrc);
-    if(headLocal.ok){
-      log('Local HEAD ok, content-type:', headLocal.type);
-    } else {
-      log('Local HEAD not ok; will still attempt play (server might not support HEAD).');
-    }
+noBtn.addEventListener("mouseenter", move);
+noBtn.addEventListener("click", move);
 
-    // Try local
-    const okLocal = await tryPlay(initialSrc);
-    if(okLocal){
-      btn.style.display = 'none';
-      return;
-    }
+let debugBox;
 
-    // Local failed — try remote fallback
-    setStatus('trying remote fallback');
-    log('Trying remote fallback:', REMOTE_FALLBACK);
-    const headRemote = await headCheck(REMOTE_FALLBACK);
-    if(headRemote.ok) log('Remote HEAD ok, content-type:', headRemote.type);
-    const okRemote = await tryPlay(REMOTE_FALLBACK);
-    if(okRemote){
-      btn.style.display = 'none';
-      return;
-    }
+function move() {
+    if (isMoving) return;
+    isMoving = true;
 
-    // Both attempts failed -> enable controls for manual troubleshooting
-    setStatus('automatic play failed — controls enabled for manual test');
-    music.controls = true;
-    btn.disabled = false;
-    btn.textContent = '💖 Click to start the music';
-    alert('Auto-play failed. Controls have been enabled so you can try playback manually. Check the browser Console and Network tabs for details.');
-  });
+    const box = document.getElementById("noBox");
 
-  // Small helper to show current internal state in console when requested
-  window.__audioDebugSnapshot = function(){
-    const a = music;
-    const snapshot = {
-      currentSrc: a.currentSrc,
-      srcAttr: sourceEl ? sourceEl.getAttribute('src') : a.src,
-      networkState: a.networkState,
-      readyState: a.readyState,
-      paused: a.paused,
-      muted: a.muted,
-      volume: a.volume,
-      duration: a.duration,
-      error: a.error && { code: a.error.code, message: a.error.message }
-    };
-    log('AUDIO SNAPSHOT:', snapshot);
-    return snapshot;
-  };
+    const boxW = box.clientWidth;
+    const boxH = box.clientHeight;
 
-  // Optional: if user presses 'y' while focused, open the success card (keeps original flow)
-  window.yes = function(){
-    music.volume = 0.1;
-    music.play().catch(()=>{});
-    document.body.querySelector('#status').textContent = 'Status: ❤️ accepted';
-    // (you can insert your success UI here)
-  };
+    const btnW = noBtn.offsetWidth;
+    const btnH = noBtn.offsetHeight;
 
-  // Initial status
-  setStatus('idle — click the pink button to start audio');
-})();
+    const x = Math.random() * (boxW - btnW);
+    const y = Math.random() * (boxH - btnH);
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+
+    setTimeout(() => isMoving = false, 150);
+}
+
+
+function yes(){
+    document.getElementById("bgMusic").play();
+    document.getElementById("bgMusic").volume = 0.1;
+document.getElementById("question").style.display="none";
+document.getElementById("success").classList.add("show");
+
+document.getElementById("noBtn").style.display="none";
+
+for(let i=0;i<25;i++){
+setTimeout(()=>{
+const p=document.createElement("div");
+p.className="pop-heart";
+p.innerHTML="❤︎⁠";
+p.style.left=Math.random()*100+"%";
+p.style.top="55%";
+document.body.appendChild(p);
+setTimeout(()=>p.remove(),2000);
+},i*90);
+}
+
+for(let i=0;i<15;i++){
+setTimeout(()=>{
+const s=document.createElement("div");
+s.innerHTML="★";
+s.style.position="fixed";
+s.style.left=Math.random()*100+"%";
+s.style.top="55%";
+s.style.fontSize="22px";
+s.style.animation="pop 2s forwards";
+document.body.appendChild(s);
+setTimeout(()=>s.remove(),2000);
+},i*120);
+}
+}
 </script>
+
 </body>
 </html>
