@@ -293,6 +293,11 @@ I want us to be forever, and I will always love you.
 
 </div>
 
+    <button id="playBtn">💖 Click to start the music</button>
+
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
 <script>
 const photos=["cat1.jpg","cat2.jpg","cat3.jpg","cat4.jpg","cat5.jpg","cat6.jpg","cat7.jpg"];
 
@@ -339,6 +344,13 @@ const noBtn = document.getElementById("noBtn");
 
 let isMoving = false;
 
+      const btn = document.getElementById("playBtn");
+  const music = document.getElementById("bgMusic");
+
+  btn.addEventListener("click", () => {
+    music.play();
+    btn.style.display = "none";
+  });
 
 noBtn.addEventListener("mouseenter", move);
 noBtn.addEventListener("click", move);
