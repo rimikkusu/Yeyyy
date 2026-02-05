@@ -326,10 +326,67 @@ const music = document.getElementById("bgMusic");
 // Set a reasonable default volume before playing
 music.volume = 0.1;
 
-btn.addEventListener("click", () => {
-  // start music (handle promise for autoplay policy)
-  music.play().catch(()=>{ /* play rejected (browser policy) — user action required */});
-  btn.style.display = "none";
+// Enhanced debug + play handler
+const sourceEl = music.querySelector('source');
+const src = sourceEl ? sourceEl.src : (music.src || null);
+
+// Helpful event logging
+music.addEventListener('play', () => console.log('Audio: play event'));
+music.addEventListener('playing', () => console.log('Audio: playing'));
+music.addEventListener('loadeddata', () => console.log('Audio: loadeddata'));
+music.addEventListener('canplay', () => console.log('Audio: canplay'));
+music.addEventListener('error', (e) => {
+  console.error('Audio element error:', e, music.error);
+});
+
+// Simple helper to show a temporary controls UI for debugging
+function showControlsFallback() {
+  music.controls = true;
+  btn.style.display = 'none';
+  alert('Controls enabled so you can manually test playback. Check the Network tab for the audio request.');
+}
+
+// Click handler that attempts to verify the file and play
+btn.addEventListener('click', async () => {
+  btn.disabled = true;
+  btn.textContent = 'Starting…';
+  try {
+    // Quick network check (HEAD) to detect 404/CORS issues early.
+    // If the file is served cross-origin and blocks HEAD, this may fail — it's only a quick check.
+    if (src) {
+      try {
+        const head = await fetch(src, { method: 'HEAD', cache: 'no-store' });
+        if (!head.ok) throw new Error('HTTP ' + head.status + ' ' + head.statusText);
+        // Optionally check content-type
+        const ct = head.headers.get('content-type') || '';
+        console.log('Audio HEAD OK. content-type:', ct);
+      } catch (fetchErr) {
+        console.warn('HEAD check failed:', fetchErr);
+        // don't abort yet — the browser might still be able to play it; continue to attempt play
+      }
+    } else {
+      console.warn('No audio source URL found on <audio>');
+    }
+
+    // Ensure volume set (not too quiet)
+    music.volume = 0.5;
+
+    // Attempt to play and await the play() promise
+    await music.play();
+    // If successful, hide the play button
+    btn.style.display = 'none';
+    console.log('Audio started successfully');
+  } catch (err) {
+    console.error('Failed to start audio:', err);
+    btn.disabled = false;
+    btn.textContent = '💖 Click to start the music';
+    // Offer fallback control UI for testing
+    if (confirm('Audio didn\'t start. Would you like to enable controls to test playback manually?')) {
+      showControlsFallback();
+    } else {
+      alert('Check the browser Console and Network tab for errors (missing file, CORS, or blocked autoplay).');
+    }
+  }
 });
 
 noBtn.addEventListener("mouseenter", move);
@@ -359,7 +416,7 @@ function move() {
 function yes(){
   // ensure music plays and at intended volume
   music.volume = 0.1;
-  music.play().catch(()=>{});
+  music.play().catch(() => {});
 
   document.getElementById("question").style.display="none";
   document.getElementById("success").classList.add("show");
