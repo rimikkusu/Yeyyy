@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lisa my beloved ❤︎</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+
+
+body{
+font-family:'Quicksand',sans-serif;
+background:linear-gradient(180deg,#0b1026,#1b1140,#2b145a);
+background-attachment:fixed;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+color:#fff;
+}
+
+body::after{
+content:"";
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:radial-gradient(circle at center, rgba(200,180,255,.15), transparent 70%);
+pointer-events:none;
+}
+
+.stars,.photo-bg,.heart-bg{
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+pointer-events:none;
+}
+
+.star{
+position:absolute;
+width:2px;
+height:2px;
+background:white;
+border-radius:50%;
+animation:twinkle 2s infinite alternate;
+opacity:.8;
+}
+
+@keyframes twinkle{
+from{opacity:.3}to{opacity:1}
+}
+
+.soft-heart{
+position:absolute;
+font-size:22px;
+opacity:.7;
+animation:float 12s linear infinite;
+filter:drop-shadow(0 0 12px #c8b6ff);
+}
+
+@keyframes float{
+0%{transform:translateY(110vh) translateX(0)}
+50%{transform:translateY(20vh) translateX(40px)}
+100%{transform:translateY(-120px) translateX(-40px)}
+}
+
+.floating-photo{
+position:absolute;
+border-radius:25px;
+object-fit:cover;
+opacity:.35;
+animation:photo linear infinite;
+box-shadow:0 0 40px rgba(200,182,255,.5);
+}
+
+@keyframes photo{
+0%{transform:translateY(120vh) translateX(0)}
+100%{transform:translateY(-220px) translateX(120px)}
+}
+
+.container{z-index:5;text-align:center}
+
+.card{
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(18px);
+padding:60px;
+border-radius:40px;
+box-shadow:0 0 90px rgba(200,182,255,.45);
+max-width:650px;
+animation:fade .8s ease;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(40px)}
+to{opacity:1}
+}
+
+.names{
+font-family:'Pacifico',cursive;
+font-size:3.2rem;
+color:#e6dcff;
+margin-bottom:15px;
+text-shadow:0 0 18px #d6ccff;
+}
+
+.question{
+font-size:2rem;
+color:#eee;
+margin-bottom:35px;
+}
+
+.buttons{
+    position:relative;
+    height:160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px; /* Space between buttons */
+}
+
+.btn{
+font-size:1.3rem;
+padding:18px 45px;
+border:none;
+border-radius:50px;
+cursor:pointer;
+transition:.3s;
+min-width: 120px; /* Ensure consistent width */
+}
+
+.btn-yes{
+background:#c8b6ff;
+color:#1b1140;
+}
+
+.btn-yes:hover{transform:scale(1.1)}
+
+.btn-no{
+    background:#555;
+    color:white;
+    position: relative;  /* Start as relative so it's in the flex layout */
+    cursor: pointer;
+    border-radius:50px;
+    padding:18px 45px;
+    font-size:1.3rem;
+    border: none;
+    transition: none;
+    min-width: 120px;
+}
+
+.success{display:none}
+.success.show{display:block}
+
+.big-glow-heart{
+font-size:130px;
+animation:pulse 2s infinite;
+filter:
+drop-shadow(0 0 15px #ffd6ff)
+drop-shadow(0 0 35px #c8b6ff)
+drop-shadow(0 0 60px #a88bff);
+}
+
+@keyframes pulse{
+0%,100%{transform:scale(1)}
+50%{transform:scale(1.25)}
+}
+
+.no-box{
+    position: fixed;
+    width: 800px;
+    height: 500px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9998;
+}
+
+.no-box{
+    position: fixed;
+    width: 800px;
+    height: 500px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9998;
+}
+
+.no-box .btn-no{
+    position: absolute;
+    pointer-events: auto;
+
+    left: 50%;
+    top: 83%;
+    transform: translate(-50%, -50%);
+}
+
+
+.no-box .btn-no{
+    position: absolute;
+    pointer-events: auto;
+}
+
+.no-box .btn-no{
+    transition: left .25s ease, top .25s ease;
+}
+
+
+.letter{
+margin-top:-15px;
+font-size:1.25rem;
+line-height:1.9;
+color:#eee;
+background:rgba(255,255,255,.05);
+padding:30px;
+border-radius:25px;
+box-shadow:inset 0 0 30px rgba(200,182,255,.25);
+}
+
+.pop-heart{
+position:fixed;
+font-size:28px;
+animation:pop 2s forwards;
+filter:drop-shadow(0 0 12px #d6ccff);
+pointer-events:none;
+}
+
+@keyframes pop{
+0%{transform:scale(0)}
+50%{transform:translateY(-120px) scale(1)}
+100%{transform:translateY(-240px) scale(1.4);opacity:0}
+}
+</style>
+</head>
+
+<body>
+    
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+
+<div class="stars" id="stars"></div>
+<div class="heart-bg" id="heartBg"></div>
+<div class="photo-bg" id="photoBg"></div>
+
+<div class="container">
+
+<div class="card" id="question">
+<div class="names">Lisa my beloved ❤︎⁠</div>
+<div class="question">Will you be my Valentine?</div>
+
+<div class="buttons">
+<button class="btn btn-yes" onclick="yes()">Yes</button>
+<div class="no-box" id="noBox">
+    <button class="btn btn-no" id="noBtn">No</button>
+</div>
+
+</div>
+</div>
+
+
+
+<div class="success" id="success">
+<div class="card">
+
+<div class="big-glow-heart">💗</div>
+<div class="names">Forever & Always</div>
+
+<div class="letter">
+<strong>My beautiful Lisa,</strong><br><br>
+I love you so much my darling, every day I wake up thinking about you.  
+Thank you for always being by my side. You make my life brighter, warmer, and happier.  
+I can't wait to see you, hold you, and kiss you.
+
+And never say that your ugly cuz you're not >:c <br>
+You are the most beautiful girl in the world.
+I want us to be forever, and I will always love you.  
+
+<br>Happy Valentine's Day my love ❤︎⁠
+
+<br>Your boyfriend,
+<strong>Edi ❤︎⁠</strong>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<script>
+const photos=["cat1.jpg","cat2.jpg","cat3.jpg","cat4.jpg","cat5.jpg","cat6.jpg","cat7.jpg"];
+
+// stars
+for(let i=0;i<130;i++){
+const s=document.createElement("div");
+s.className="star";
+s.style.left=Math.random()*100+"%";
+s.style.top=Math.random()*100+"%";
+s.style.animationDuration=1+Math.random()*3+"s";
+document.getElementById("stars").appendChild(s);
+}
+
+function heart(){
+const h=document.createElement("div");
+h.className="soft-heart";
+h.innerHTML="❤︎⁠";
+h.style.left=Math.random()*100+"%";
+h.style.fontSize=16+Math.random()*26+"px";
+document.getElementById("heartBg").appendChild(h);
+setTimeout(()=>h.remove(),12000);
+}
+setInterval(heart,450);
+
+function floatingPhoto(){
+const img=document.createElement("img");
+img.src=photos[Math.floor(Math.random()*photos.length)];
+img.className="floating-photo";
+const size=120+Math.random()*170;
+img.style.width=size+"px";
+img.style.height=size+"px";
+img.style.left=Math.random()*100+"%";
+img.style.animationDuration=35+Math.random()*30+"s";
+document.getElementById("photoBg").appendChild(img);
+setTimeout(()=>img.remove(),65000);
+}
+for(let i=0;i<6;i++) setTimeout(floatingPhoto,i*900);
+setInterval(floatingPhoto,4500);
+
+
+
+
+const noBtn = document.getElementById("noBtn");
+
+let isMoving = false;
+
+
+noBtn.addEventListener("mouseenter", move);
+noBtn.addEventListener("click", move);
+
+let debugBox;
+
+function move() {
+    if (isMoving) return;
+    isMoving = true;
+
+    const box = document.getElementById("noBox");
+
+    const boxW = box.clientWidth;
+    const boxH = box.clientHeight;
+
+    const btnW = noBtn.offsetWidth;
+    const btnH = noBtn.offsetHeight;
+
+    const x = Math.random() * (boxW - btnW);
+    const y = Math.random() * (boxH - btnH);
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+
+    setTimeout(() => isMoving = false, 150);
+}
+
+
+function yes(){
+    document.getElementById("bgMusic").play();
+    document.getElementById("bgMusic").volume = 0.1;
+document.getElementById("question").style.display="none";
+document.getElementById("success").classList.add("show");
+
+document.getElementById("noBtn").style.display="none";
+
+for(let i=0;i<25;i++){
+setTimeout(()=>{
+const p=document.createElement("div");
+p.className="pop-heart";
+p.innerHTML="❤︎⁠";
+p.style.left=Math.random()*100+"%";
+p.style.top="55%";
+document.body.appendChild(p);
+setTimeout(()=>p.remove(),2000);
+},i*90);
+}
+
+for(let i=0;i<15;i++){
+setTimeout(()=>{
+const s=document.createElement("div");
+s.innerHTML="★";
+s.style.position="fixed";
+s.style.left=Math.random()*100+"%";
+s.style.top="55%";
+s.style.fontSize="22px";
+s.style.animation="pop 2s forwards";
+document.body.appendChild(s);
+setTimeout(()=>s.remove(),2000);
+},i*120);
+}
+}
+</script>
+
+</body>
+</html>
